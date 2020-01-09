@@ -1,0 +1,73 @@
+/gate/geometry/setMaterialDatabase GateMaterials.db
+
+/gate/world/geometry/setXLength 1000. cm
+/gate/world/geometry/setYLength 1000. cm
+/gate/world/geometry/setZLength 1000. cm
+
+/gate/world/daughters/name scanner
+/gate/world/daughters/insert box
+/gate/scanner/geometry/setXLength 10. cm
+/gate/scanner/geometry/setYLength 10. cm
+/gate/scanner/geometry/setZLength 10. cm
+/gate/scanner/placement/setTranslation 0 0 5. cm
+/gate/scanner/vis/forceWireframe
+
+/gate/scanner/daughters/name phantom
+/gate/scanner/daughters/insert box
+/gate/phantom/geometry/setXLength 10. cm
+/gate/phantom/geometry/setYLength 10. cm
+/gate/phantom/geometry/setZLength 10. cm
+/gate/phantom/placement/setTranslation 0 0 0 mm
+/gate/phantom/setMaterial WaterWithSalt
+/gate/phantom/vis/forceWireframe
+
+#/gate/phantom/attachCrystalSD
+
+#=================#
+# Physics			#
+#=================#
+
+/gate/geometry/setIonisationPotential Water 78 eV
+/gate/physics/addPhysicsList QGSP_BIC_HP
+
+/gate/actor/addActor EnergySpectrumActor  LaBr3
+/gate/actor/LaBr3/save  Output/spectrum.root
+/gate/actor/LaBr3/attachTo phantom
+/gate/actor/LaBr3/energySpectrum/setEmin 0 eV
+/gate/actor/LaBr3/energySpectrum/setEmax 8 MeV
+/gate/actor/LaBr3/energySpectrum/setNumberOfBins 800 # 10 keV
+/gate/actor/LaBr3/addFilter IDFilter
+/gate/actor/LaBr3/IDFilter/selectID 22
+
+/gate/run/initialize
+
+#=======================#
+# ADD NEUTRON BEAM	   #
+#=======================#
+
+/gate/source/addSource DT PencilBeam
+/gate/source/DT/setParticleType neutron
+/gate/source/DT/setEnergy 14. MeV
+/gate/source/DT/setSigmaEnergy 0. MeV
+/gate/source/DT/setPosition 0. 0. -10. mm
+/gate/source/DT/setSigmaX 3 mm
+/gate/source/DT/setSigmaY 3 mm
+/gate/source/DT/setSigmaTheta 2 mrad
+/gate/source/DT/setSigmaPhi 2 mrad
+/gate/source/DT/setEllipseXThetaEmittance 15 mm*mrad
+/gate/source/DT/setEllipseXThetaRotationNorm negative
+/gate/source/DT/setEllipseYPhiEmittance 15 mm*mrad
+/gate/source/DT/setEllipseYPhiRotationNorm negative
+
+#/gate/output/root/enable
+#/gate/output/root/setRootSinglesFlag 0
+#/gate/output/root/setFileName Output/tracking
+
+#===============#
+# START BEAMS	#
+##===============#
+
+/gate/random/setEngineName MersenneTwister
+/gate/random/setEngineSeed auto
+/gate/application/setTotalNumberOfPrimaries 1e7
+/gate/application/start
