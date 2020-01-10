@@ -6,19 +6,19 @@
 
 /gate/world/daughters/name scanner
 /gate/world/daughters/insert box
-/gate/scanner/geometry/setXLength 10. cm
-/gate/scanner/geometry/setYLength 10. cm
-/gate/scanner/geometry/setZLength 10. cm
-/gate/scanner/placement/setTranslation 0 0 5. cm
+/gate/scanner/geometry/setXLength 20. cm
+/gate/scanner/geometry/setYLength 20. cm
+/gate/scanner/geometry/setZLength 50. cm
+/gate/scanner/placement/setTranslation 0 0 25. cm
 /gate/scanner/vis/forceWireframe
 
 /gate/scanner/daughters/name phantom
 /gate/scanner/daughters/insert box
-/gate/phantom/geometry/setXLength 10. cm
-/gate/phantom/geometry/setYLength 10. cm
-/gate/phantom/geometry/setZLength 10. cm
+/gate/phantom/geometry/setXLength 20. cm
+/gate/phantom/geometry/setYLength 20. cm
+/gate/phantom/geometry/setZLength 50. cm
 /gate/phantom/placement/setTranslation 0 0 0 mm
-/gate/phantom/setMaterial WaterWithSalt
+/gate/phantom/setMaterial {samplematerial}
 /gate/phantom/vis/forceWireframe
 
 #/gate/phantom/attachCrystalSD
@@ -31,13 +31,25 @@
 /gate/physics/addPhysicsList QGSP_BIC_HP
 
 /gate/actor/addActor EnergySpectrumActor  LaBr3
-/gate/actor/LaBr3/save  Output/spectrum.root
+/gate/actor/LaBr3/save  Output/{samplematerial}_spectrum{idx}.root
 /gate/actor/LaBr3/attachTo phantom
 /gate/actor/LaBr3/energySpectrum/setEmin 0 eV
 /gate/actor/LaBr3/energySpectrum/setEmax 8 MeV
 /gate/actor/LaBr3/energySpectrum/setNumberOfBins 800 # 10 keV
 /gate/actor/LaBr3/addFilter IDFilter
 /gate/actor/LaBr3/IDFilter/selectID 22
+
+/gate/actor/addActor PhaseSpaceActor PSA
+/gate/actor/PSA/save Output/{samplematerial}_psa{idx}.root
+/gate/actor/PSA/attachTo phantom
+/gate/actor/PSA/storeOutgoingParticles true
+/gate/actor/PSA/enableEkine true
+/gate/actor/PSA/enableParticleName true
+/gate/actor/PSA/storeSecondaries true
+/gate/actor/PSA/enableProductionProcess true
+/gate/actor/PSA/enableProductionVolume true
+/gate/actor/PSA/addFilter IDFilter
+/gate/actor/PSA/IDFilter/selectID 22
 
 /gate/run/initialize
 

@@ -633,3 +633,18 @@ WaterWithSalt: d=1.0112 g/cm3; n=5; state=Solid
        +el: name=Sodium      ; f=0.007867
        +el: name=Chlorine    ; f=0.012356
        +el: name=Strontium   ; f=0.000277
+
+Hydrogen: d=1 g/cm3; n=1; state=Solid
+       +el: name=Hydrogen    ; f=1
+
+Oxygen: d=1 g/cm3; n=1; state=Solid
+       +el: name=Oxygen      ; f=1
+
+Sodium: d=1 g/cm3; n=1; state=Solid
+       +el: name=Sodium      ; f=1
+ 
+Chlorine: d=1 g/cm3; n=1; state=Solid
+       +el: name=Chlorine    ; f=1
+
+Strontium: d=1 g/cm3; n=1; state=Solid
+       +el: name=Strontium   ; f=1
