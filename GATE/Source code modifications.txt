@@ -1,0 +1,87 @@
+// PATCH FOR ROOT READOUT OF TARGET NUCLEUS IN HADRONIC INTERACTIONS
+
+// These modifications were applied to Gate 8.2
+// As the ROOT readout system was changed in Gate 9.0, probably this patch must be
+// amended somewhat to work there.
+
+//////////////////////////////////////
+// In digit_hits/src/GateCrystalSD.cc
+//////////////////////////////////////
+
+// Add the identification of the target nucleus to the Hits tree
+
+// Header:
+#include "G4HadronicProcess.hh"
+
+
+// From Line 103:
+G4int targetZ, targetA;
+
+if (processName == "hadElastic" || processName == "hIoni") {
+   G4HadronicProcess *ptr = (G4HadronicProcess*) process;
+   const G4Nucleus *nuc = ptr->GetTargetNucleus();
+   targetA = nuc->GetA_asInt();
+   targetZ = nuc->GetZ_asInt(); 
+}
+
+// Further down
+aHit->SetTargetA( targetA );
+aHit->SetTargetZ( targetZ );
+
+//////////////////////////////////////
+// In digit_hits/src/GateCrystalHit.cc
+//////////////////////////////////////
+
+// Add to ctor in line ~30
+
+m_targetA(0);
+m_targetZ(0);
+
+//////////////////////////////////////
+// In digit_hits/include/GateCrystalHit.hh
+//////////////////////////////////////
+
+// Add variables to private, line ~80
+
+G4int m_targetZ;
+G4int m_targetA;
+
+// Add setters and getters to public, line ~130
+
+inline void SetTargetA(G4int j) { m_targetA = j; }
+inline G4int GetTargetA() { return m_targetA; }
+
+inline void SetTargetZ(G4int j) { m_targetZ = j; }
+inline G4int SetTargetZ() { return m_targetZ; }
+
+//////////////////////////////////////
+// In general/src/GateRootDefs.cc
+//////////////////////////////////////
+
+// Add to GateRootHitBuffer::Clear(), line ~114
+
+targetA = 0;
+targetZ = 0;
+
+// Add to GateRootHitBuffer::Fill, line ~160
+
+targetA = aHit->GetTargetA();
+targetZ = aHit->GetTargetZ();
+
+// Add to Hit buffer tree, line ~260
+
+Branch("targetA", &buffer.targetA, "targetA/I");
+Branch("targetZ", &buffer.targetZ, "targetZ/I");
+
+// Add to Hit tree, line ~320
+
+hitTree->SetBranchAddress("targetA", &buffer.targetA);
+hitTree->SetBranchAddress("targetZ", &buffer.targetZ);
+
+//////////////////////////////////////
+// In general/include/GateRootDefs.hh
+//////////////////////////////////////
+
+// Add as public variables, line ~184
+Int_t targetA;
+Int_t targetZ;
